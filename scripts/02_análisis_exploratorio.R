@@ -1,4 +1,5 @@
 ############################################################
+# Sofía De Luca
 # Proyecto IB - Análisis cáncer de hígado
 # Descripción: Gráficos descriptivos de las variables
 ############################################################
@@ -35,17 +36,31 @@ ggplot(liver_death, aes(x = year, y = death_rate, color = country)) +
 # Barplot - Tasa media de mortalidad por cáncer de hígado por país
 country_means <- liver_death %>%
   group_by(country) %>%
-  summarise(rate_mean = mean(death_rate, na.rm = TRUE), .groups = "drop") %>% # calculamos la tasa media de mortalidad por pais
+  summarise(
+    rate_mean = mean(death_rate, na.rm = TRUE),  # tasa media
+    rate_sd   = sd(death_rate, na.rm = TRUE),    # desviación estándar
+    .groups = "drop"
+  ) %>%
   arrange(desc(rate_mean)) %>%
   mutate(country = fct_reorder(country, rate_mean, .desc = TRUE))
 
 ggplot(country_means, aes(x = country, y = rate_mean, fill = country)) +
   geom_col() +
+  geom_errorbar(
+    aes(
+      ymin = rate_mean - rate_sd,
+      ymax = rate_mean + rate_sd
+    ),
+    width = 0.2,
+    color = "black"
+  ) +
   coord_flip() +
-  scale_fill_manual(values = country_cols, na.value = "grey80") +
-  labs(x = "País",
-       y = "Tasa media de mortalidad",
-       title = "Tasa media de mortalidad por cáncer de hígado por país") +
+  scale_fill_manual(values = country_colors, na.value = "grey80") +
+  labs(
+    x = "País",
+    y = "Tasa media de mortalidad",
+    title = "Tasa media de mortalidad por cáncer de hígado por país"
+  ) +
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -65,17 +80,28 @@ ggplot(alcohol_consumption, aes(x = year, y = alcohol_cons, color = country)) +
 # Barplot - Consumo medio de alcohol por país
 country_means <- alcohol_consumption %>%
   group_by(country) %>%
-  summarise(rate_mean = mean(alcohol_cons, na.rm = TRUE), .groups = "drop") %>%
+  summarise(
+    rate_mean = mean(alcohol_cons, na.rm = TRUE),
+    rate_sd   = sd(alcohol_cons, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
   arrange(desc(rate_mean)) %>%
   mutate(country = fct_reorder(country, rate_mean, .desc = TRUE))
 
 ggplot(country_means, aes(x = country, y = rate_mean, fill = country)) +
   geom_col() +
+  geom_errorbar(
+    aes(ymin = rate_mean - rate_sd, ymax = rate_mean + rate_sd),
+    width = 0.2,
+    color = "black"
+  ) +
   coord_flip() +
-  scale_fill_manual(values = country_cols, na.value = "grey80") +  
-  labs(x = "País", 
-       y = "Consumo medio de alcohol",
-       title = "Consumo medio de alcohol por país") +
+  scale_fill_manual(values = country_colors, na.value = "grey80") +  
+  labs(
+    x = "País", 
+    y = "Consumo medio de alcohol",
+    title = "Consumo medio de alcohol por país"
+  ) +
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -96,16 +122,26 @@ ggplot(hepatitisB, aes(x = year, y = hepatitisB_value, color = country)) +
 # Barplot - Tasa de incidencia media de hepatitis B por país
 country_means <- hepatitisB %>%
   group_by(country) %>%
-  summarise(rate_mean = mean(hepatitisB_value, na.rm = TRUE), .groups = "drop") %>%
+  summarise(
+    rate_mean = mean(hepatitisB_value, na.rm = TRUE),
+    rate_sd   = sd(hepatitisB_value, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
   arrange(desc(rate_mean)) %>%
   mutate(country = fct_reorder(country, rate_mean, .desc = TRUE))
 
 ggplot(country_means, aes(x = country, y = rate_mean, fill = country)) +
   geom_col() +
+  geom_errorbar(aes(ymin = rate_mean - rate_sd, ymax = rate_mean + rate_sd),
+    width = 0.2,
+    color = "black"
+  ) +
   coord_flip() +
-  scale_fill_manual(values = country_cols, na.value = "grey80") +
-  labs(x = "País", 
-       y = "Tasa de incidencia media de hepatitis B",
-       title = "Tasa de incidencia media de hepatitis B por país") +
+  scale_fill_manual(values = country_colors, na.value = "grey80") +
+  labs(
+    x = "País",
+    y = "Tasa de incidencia media de hepatitis B",
+    title = "Tasa de incidencia media de hepatitis B por país"
+  ) +
   theme_minimal() +
   theme(legend.position = "none")
